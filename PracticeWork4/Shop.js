@@ -1,40 +1,61 @@
-let product = {
-    name:"",
-    quontity:0,
+class Product {
+    constructor(name, quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
 
-    createProduct(name, quontity){
-        product.name = name;
-        product.quontity = quontity;
-        return product;
+    increase(num) {
+        this.quantity = parseInt(this.quantity) + parseInt(num);
+    } 
+}
+
+function convertToProductsList(input) {
+    let products = [];
+    for (let i = 0; i < input.length - 1; i += 2) {
+        products.push(new Product(input[i], input[i + 1]));
+    }
+    return products;
+}
+
+function contains(list, product) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].name === product.name) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function findAndIncrease(list, product) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].name === product.name) {
+            list[i].increase(product.quantity);
+        }
     }
 }
-function returnProducts(Availible, Order){
-    let resProducts = [1,2,3,4,5,67];
-    let counter=0;
-    for(let i = 0; i<Availible.length;i+=2){
-        resProducts[counter] = product.createProduct(Availible[i],Availible[i+1]);
-        counter++;
-    }
-    for(let i=0;i<Order.length;i+=2){
-        resProducts[counter] = product.createProduct(Order[i],Order[i+1]);
-        counter++;
+
+function solve(current, ordered) {
+    current = convertToProductsList(current);
+    ordered = convertToProductsList(ordered);
+
+    for (let i = 0; i < ordered.length; i++) {
+        if (contains(current, ordered[i])) {
+            findAndIncrease(current, ordered[i]);
+        } else {
+            current.push(ordered[i]);
+        }
     }
 
-
-    // for (let i = 0; i <Availible.length; i+=2) {
-    //     for (let j = 0; j < Order.length; j+=2) {
-    //         if(Availible[i]==Order[j]){
-    //             Availible[i+1]=Order[j+1];
-    //         }
-    //         else{
-    //         resProducts[counter]=product.createProduct(Order[j],Order[j+1]);
-    //         counter++;
-    //         }
-    //     }
-    //     resProducts[counter]=product.createProduct(Availible[i],Availible[i+1]);
-    //     counter++;
-    // }
-   
-    console.log(resProducts[3]);
+    current.forEach(p => {
+        console.log(`${p.name} -> ${p.quantity}`);
+    });
 }
-returnProducts(['banana', '5', 'kiwi','4'], ['banana','1','orange','7'])
+
+solve([
+    'Chips', '5', 'CocaCola', '9', 'Bananas',
+    '14', 'Pasta', '4', 'Beer', '2'
+    ],
+    [
+    'Flour', '44', 'Oil', '12', 'Pasta', '7',
+    'Tomatoes', '70', 'Bananas', '30'
+    ]);
